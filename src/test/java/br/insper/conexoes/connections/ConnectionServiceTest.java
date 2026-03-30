@@ -7,6 +7,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -71,6 +74,27 @@ class ConnectionServiceTest {
 
     // createShouldThrowNotFoundWhenToUserDoesNotExist
     // listByUserShouldReturnConnectionsAndSendEvent
+    @Test
+    void list_shouldReturnConnectionsAndSendEvent() {
+
+        Connection connection1 = new Connection("user-1", "user-2");
+        Connection connection2 = new Connection("user-1", "user-3");
+
+        List<Connection> lista = new ArrayList<>();
+        lista.add(connection1);
+        lista.add(connection2);
+
+        when(repository.findByFromUserId("user-1"))
+                .thenReturn(lista);
+
+        // ação
+        List<Connection> response = connectionService.listByUser("user-1");
+
+        assertEquals(2, response.size());
+        assertNotNull(response);
+        assertEquals("user-1", response.getFirst().getFromUserId());
+
+    }
     // deleteShouldSendEventAndRemoveConnection
 
 }
